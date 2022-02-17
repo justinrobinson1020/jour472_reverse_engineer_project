@@ -1,0 +1,18 @@
+---
+title: "reverse_engineering_project"
+author: "Justin Robinson, Hanna Zakharenko, Ian Decker"
+date: "2/17/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# Turn off scientific notation
+options(scipen=999)
+
+# Load the tidyverse.
+library(tidyverse)
+```
