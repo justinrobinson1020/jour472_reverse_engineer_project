@@ -1,0 +1,141 @@
+---
+title: "Reverse Engineering Project"
+author: "Hanna Zakharenko"
+date: "Date here"
+output:
+  html_document:
+    theme: cerulean
+    highlight: pygments
+    toc: true
+    toc_float:
+      collapsed: true
+      smooth_scroll: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction 
+
+In this notebook, we are reverse engineering the story, [STORY NAME](STORY URL)
+
+## Load libraries
+
+Loading required libraries for this analysis.
+
+```{r echo=FALSE, message=FALSE}
+library(tidyverse)
+```
+
+## Load and Cleaning Data
+
+In this section, describe the source of the data, write a basic data dictionary for data you are working with, and discuss any caveats or issues you discovered working with this data. 
+
+```{r}
+# Load required data
+library (readr)
+
+urlfile="https://raw.githubusercontent.com/fivethirtyeight/data/master/comic-characters/dc-wikia-data.csv"
+
+dc_characters<-read_csv(url(urlfile))
+
+urlfile2 = "https://raw.githubusercontent.com/fivethirtyeight/data/master/comic-characters/marvel-wikia-data.csv"
+
+marvel_characters<- read_csv((urlfile2))
+
+# Path to data should be loaded from folder "data" i.e. read_csv("data/name_of_data.csv")
+
+# Clean required data and prepare for analysis if needed. 
+
+
+```
+
+## Sentences to Engineer
+In this notebook, we are reverse engineering five sentences from the story.
+
+### Sentence 1
+
+* **Sentence text**: "Among the characters for which we have gender data, females made up only 29.3 percent of the DC character list and 24.7 percent of the Marvel roster."
+* **Analysis summary**: It was hard to determine exactly what result the reporters were saying, so I was unable to find the exact number. I performed analysis comparing females to all genders in the DC character population that there was data for by eliminating the N/A values, as well as comparing females just to data that reported male/female characters, but through both methods I did not get 29.3% (it is 29.14% for male/female and 29.05% for all gender). However, I did get the result from the Marvel roster by using the all sex method, which was 24.7%.
+
+```{r}
+#DC CHARACTERS MALE/FEMALE
+malefemale_dc_characters <- dc_characters %>%
+  filter(!is.na(SEX))%>%
+  filter(SEX =="Female Characters" | SEX == "Male Characters")
+
+malefemale_dc_characters %>%
+  group_by(SEX) %>%
+  summarise(count=n()) %>%
+  mutate(percent_of_total = count/6750*100)
+```
+```{r}
+#DC CHARACTERS ALL SEX
+allsex_dc_characters <- dc_characters %>%
+  filter(!is.na(SEX))
+
+allsex_dc_characters %>%
+  group_by(SEX) %>%
+  summarise(count=n()) %>%
+  mutate(percent_of_total = count/6771*100)
+```
+```{r}
+#MARVEL CHARACTERS ALL SEX
+allsex_marvel_characters <- marvel_characters %>%
+  filter(!is.na(SEX))
+
+allsex_marvel_characters %>%
+  group_by(SEX) %>%
+  summarise(count=n()) %>%
+  mutate(percent_of_total = count/15522*100)
+```
+### Sentence 2
+
+* **Sentence text**: [Paste in sentence to engineer here]
+* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+
+```{r}
+# Put code to reverse engineer sentence here
+
+# Display results of code below this codeblock
+
+```
+
+### Sentence 3
+
+* **Sentence text**: [Paste in sentence to engineer here]
+* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+
+```{r}
+# Put code to reverse engineer sentence here
+
+# Display results of code below this codeblock
+
+```
+
+### Sentence 4
+
+* **Sentence text**: [Paste in sentence to engineer here]
+* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+
+```{r}
+# Put code to reverse engineer sentence here
+
+# Display results of code below this codeblock
+
+```
+
+### Sentence 5
+
+* **Sentence text**: [Paste in sentence to engineer here]
+* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+
+```{r}
+# Put code to reverse engineer sentence here
+
+# Display results of code below this codeblock
+
+```
+
+-30-
