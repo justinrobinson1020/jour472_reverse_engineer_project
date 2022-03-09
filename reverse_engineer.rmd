@@ -9,10 +9,148 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r}
-# Turn off scientific notation
-options(scipen=999)
+## Introduction 
 
-# Load the tidyverse.
+In this notebook, we are reverse engineering the story, Comic Books Are Still Made By Men, For Men And About Men (https://fivethirtyeight.com/features/women-in-comic-books/)
+
+## Load libraries
+
+Loading required libraries for this analysis.
+
+```{r echo=FALSE, message=FALSE}
 library(tidyverse)
+library (readr)
 ```
+
+## Load and Cleaning Data
+
+In this section, describe the source of the data, write a basic data dictionary for data you are working with, and discuss any caveats or issues you discovered working with this data. 
+
+```{r}
+# Load required data
+
+urlfile="https://raw.githubusercontent.com/fivethirtyeight/data/master/comic-characters/dc-wikia-data.csv"
+
+dc_characters<-read_csv(url(urlfile))
+
+urlfile2 = "https://raw.githubusercontent.com/fivethirtyeight/data/master/comic-characters/marvel-wikia-data.csv"
+
+marvel_characters<- read_csv((urlfile2))
+
+# Path to data should be loaded from folder "data" i.e. read_csv("data/name_of_data.csv")
+
+# Clean required data and prepare for analysis if needed.
+
+
+```
+
+## Sentences to Engineer
+In this notebook, we are reverse engineering five sentences from the story.
+
+### Sentence 1
+
+* **Sentence text**: "Among the characters for which we have gender data, females made up only 29.3 percent of the DC character list and 24.7 percent of the Marvel roster."
+* **Analysis summary**: It was hard to determine exactly what result the reporters were saying, so I was unable to find the exact number. I performed analysis comparing females to all genders in the DC character population that there was data for by eliminating the N/A values, as well as comparing females just to data that reported male/female characters, but through both methods I did not get 29.3% (it is 29.14% for male/female and 29.05% for all gender). However, I did get the result from the Marvel roster by using the all sex method, which was 24.7%.
+
+```{r}
+#DC CHARACTERS MALE/FEMALE
+malefemale_dc_characters <- dc_characters %>%
+  filter(!is.na(SEX))%>%
+  filter(SEX =="Female Characters" | SEX == "Male Characters")
+
+malefemale_dc_characters %>%
+  group_by(SEX) %>%
+  summarise(count=n()) %>%
+  mutate(percent_of_total = count/6750*100)
+```
+```{r}
+#DC CHARACTERS ALL SEX
+allsex_dc_characters <- dc_characters %>%
+  filter(!is.na(SEX))
+
+allsex_dc_characters %>%
+  group_by(SEX) %>%
+  summarise(count=n()) %>%
+  mutate(percent_of_total = count/6771*100)
+```
+```{r}
+#MARVEL CHARACTERS ALL SEX
+allsex_marvel_characters <- marvel_characters %>%
+  filter(!is.na(SEX))
+
+allsex_marvel_characters %>%
+  group_by(SEX) %>%
+  summarise(count=n()) %>%
+  mutate(percent_of_total = count/15522*100)
+```
+### Sentence 2
+
+* **Sentence text**: “Women and men were almost exactly equally likely to have a secret identity in the Marvel universe (49.4 percent of males and 49.5 percent of females), while in the DC universe 51 percent of males had a secret identity and 45 percent of females did.”
+* **Analysis summary**: Initially I started out by attempting to isolate each individual group (female marvel characters, female marvel characters with secret identites, male marvel characters, etc.), but then changed my approach to find secret identity percentages. This reduced the amount of redundancy and complexity in the code and made the results easier to present in one place. Using this method I was able to accurately reproduce the results from this sentence.
+
+```{r}
+marvel_characters_idenity_by_gender <- marvel_characters %>%
+  filter(!is.na(ID)) %>% 
+  group_by(SEX) %>% 
+  mutate(gender_total = n()) %>% 
+  group_by(SEX, ID) %>% 
+  mutate(gender_id_total = n()) %>% 
+  mutate(gender_id_percent = gender_id_total / gender_total * 100) %>% 
+  group_by(gender_id_percent, SEX, ID) %>% 
+  summarise(
+    count = n(),
+  ) %>% 
+  arrange(SEX)
+
+dc_characters_idenity_by_gender <- dc_characters %>%
+  filter(!is.na(ID)) %>% 
+  group_by(SEX) %>% 
+  mutate(gender_total = n()) %>% 
+  group_by(SEX, ID) %>% 
+  mutate(gender_id_total = n()) %>% 
+  mutate(gender_id_percent = gender_id_total / gender_total * 100) %>% 
+  group_by(gender_id_percent, SEX, ID) %>% 
+  summarise(
+    count = n(),
+  ) %>% 
+  arrange(SEX)
+
+```
+
+### Sentence 3
+
+* **Sentence text**: [Paste in sentence to engineer here]
+* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+
+```{r}
+# Put code to reverse engineer sentence here
+
+# Display results of code below this codeblock
+
+```
+
+### Sentence 4
+
+* **Sentence text**: [Paste in sentence to engineer here]
+* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+
+```{r}
+# Put code to reverse engineer sentence here
+
+# Display results of code below this codeblock
+
+```
+
+### Sentence 5
+
+* **Sentence text**: [Paste in sentence to engineer here]
+* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+
+```{r}
+# Put code to reverse engineer sentence here
+
+# Display results of code below this codeblock
+
+```
+
+-30-
