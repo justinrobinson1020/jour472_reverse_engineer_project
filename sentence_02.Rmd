@@ -42,18 +42,36 @@ dc_all_female <- dc_wikia_data %>%
   filter(SEX == "Female Characters") %>%
   summarise(count=n())
 
-#This code tells us that there are 953 "Good Female Characters" in the dc_wikia_data set.
+```
+
+```{r}
+
+#This code tells us that there are 953 "Good Female Characters" in the dc_wikia_data set, which is 48.4% of the total female characters.
 dc_good_female <- dc_wikia_data %>%
   filter(SEX == "Female Characters") %>% 
   filter(ALIGN == "Good Characters") %>%
-  summarise(count=n())
-
-
-
-
-# Display results of code below this codeblock
+  summarise(count=n()) %>%
+  mutate(percent_of_total = count/1967*100)
 
 ```
 
+```{r}
+#This code tells us that there are 196 "Neutral Female Characters" in the dc_wikia_data set, which is 9.96%, or 10% of the total female characters.
+dc_neutral_female <- dc_wikia_data %>%
+  filter(SEX == "Female Characters") %>% 
+  filter(ALIGN == "Neutral Characters") %>%
+  summarise(count=n()) %>%
+  mutate(percent_of_total = count/1967*100)
 
+```
+
+```{r}
+#This code tells us that there are 597 "Bad Female Characters" in the dc_wikia_data set, which is 30.4% of the total female characters.
+dc_bad_female <- dc_wikia_data %>%
+  filter(SEX == "Female Characters") %>% 
+  filter(ALIGN == "Bad Characters") %>%
+  summarise(count=n()) %>%
+  mutate(percent_of_total = count/1967*100)
+
+```
 
