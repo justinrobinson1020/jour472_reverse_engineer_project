@@ -44,6 +44,8 @@ dc_all_female <- dc_wikia_data %>%
 
 ```
 
+
+
 ```{r}
 
 #This code tells us that there are 953 "Good Female Characters" in the dc_wikia_data set, which is 48.4% of the total female characters.
@@ -55,6 +57,8 @@ dc_good_female <- dc_wikia_data %>%
 
 ```
 
+
+
 ```{r}
 #This code tells us that there are 196 "Neutral Female Characters" in the dc_wikia_data set, which is 9.96%, or 10% of the total female characters.
 dc_neutral_female <- dc_wikia_data %>%
@@ -65,6 +69,8 @@ dc_neutral_female <- dc_wikia_data %>%
 
 ```
 
+
+
 ```{r}
 #This code tells us that there are 597 "Bad Female Characters" in the dc_wikia_data set, which is 30.4% of the total female characters.
 dc_bad_female <- dc_wikia_data %>%
@@ -74,4 +80,51 @@ dc_bad_female <- dc_wikia_data %>%
   mutate(percent_of_total = count/1967*100)
 
 ```
+
+
+
+```{r}
+#This code tells us that there are 4783 male characters in the dc_wikia_data set.
+dc_all_male <- dc_wikia_data %>%
+  filter(SEX == "Male Characters") %>%
+  summarise(count=n())
+
+```
+
+
+
+```{r}
+#This code tells us that there are 	1843 "Good Male Characters" in the dc_wikia_data set, which is 39% of the total male characters.
+dc_good_male <- dc_wikia_data %>%
+  filter(SEX == "Male Characters") %>% 
+  filter(ALIGN == "Good Characters") %>%
+  summarise(count=n()) %>%
+  mutate(percent_of_total = count/4783*100)
+
+```
+
+
+
+```{r}
+#This code tells us that there are 	359 "Neutral Male Characters" in the dc_wikia_data set, which is 7.5%, or 8% of the total male characters.
+dc_neutral_male <- dc_wikia_data %>%
+  filter(SEX == "Male Characters") %>% 
+  filter(ALIGN == "Neutral Characters") %>%
+  summarise(count=n()) %>%
+  mutate(percent_of_total = count/4783*100)
+
+```
+
+
+
+```{r}
+#This code tells us that there are 	2223 "Bad Male Characters" in the dc_wikia_data set, which is 46.5% of the total male characters.
+dc_bad_male <- dc_wikia_data %>%
+  filter(SEX == "Male Characters") %>% 
+  filter(ALIGN == "Bad Characters") %>%
+  summarise(count=n()) %>%
+  mutate(percent_of_total = count/4783*100)
+
+```
+
 
