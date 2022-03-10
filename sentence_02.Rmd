@@ -30,7 +30,9 @@ In this notebook, we are reverse engineering five sentences from the story.
 
 ### Sentence 2
 
-* **Sentence text**: “In both DC and Marvel, women were of neutral allegiance at a higher rate than men. DC: Female: Good 54%, Neutral 12%, Bad 34%. Male: Good 42%, Neutral 8%, Bad 50%. Marvel: Female: Good 48%, Neutral 21%, Bad 31%. Male: Good 30%, Neutral 15%, Bad 55%
+* **Sentence text**: In both DC and Marvel, women were of neutral allegiance at a higher rate than men.
+DC: Female: Good 54%, Neutral 12%, Bad 34%. Male: Good 42%, Neutral 8%, Bad 50%. 
+Marvel: Female: Good 48%, Neutral 21%, Bad 31%. Male: Good 30%, Neutral 15%, Bad 55%
 
 * **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
 
@@ -47,7 +49,6 @@ dc_all_female <- dc_wikia_data %>%
 
 
 ```{r}
-
 #This code tells us that there are 953 "Good Female Characters" in the dc_wikia_data set, which is 48.4% of the total female characters.
 dc_good_female <- dc_wikia_data %>%
   filter(SEX == "Female Characters") %>% 
@@ -126,5 +127,57 @@ dc_bad_male <- dc_wikia_data %>%
   mutate(percent_of_total = count/4783*100)
 
 ```
+
+
+
+```{r}
+#This code tells us that there are 3837 female characters in the marvel_wikia_data set.
+marvel_all_female <- marvel_wikia_data %>%
+  filter(SEX == "Female Characters") %>%
+  summarise(count=n())
+
+```
+
+
+
+```{r}
+#This code tells us that there are 1537 "Good Female Characters" in the marvel_wikia_data set, which is 40.1% of the total female characters.
+marvel_good_female <- marvel_wikia_data %>%
+  filter(SEX == "Female Characters") %>% 
+  filter(ALIGN == "Good Characters") %>%
+  summarise(count=n()) %>%
+  mutate(percent_of_total = count/3837*100)
+
+```
+
+
+
+```{r}
+#This code tells us that there are 640 "Neutral Female Characters" in the marvel_wikia_data set, which is 17% of the total female characters.
+marvel_neutral_female <- marvel_wikia_data %>%
+  filter(SEX == "Female Characters") %>% 
+  filter(ALIGN == "Neutral Characters") %>%
+  summarise(count=n()) %>%
+  mutate(percent_of_total = count/3837*100)
+
+```
+
+
+
+```{r}
+#This code tells us that there are 976 "Bad Female Characters" in the marvel_wikia_data set, which is 25% of the total female characters.
+marvel_bad_female <- marvel_wikia_data %>%
+  filter(SEX == "Female Characters") %>% 
+  filter(ALIGN == "Bad Characters") %>%
+  summarise(count=n()) %>%
+  mutate(percent_of_total = count/3837*100)
+
+```
+
+
+
+
+
+
 
 
