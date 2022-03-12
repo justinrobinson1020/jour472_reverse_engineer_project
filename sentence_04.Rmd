@@ -60,7 +60,7 @@ dc_all_female <- dc_wikia_data %>%
 #This code tells us that there are 953 "Good Female Characters" in the dc_wikia_data set, which is 48.4% of the total female characters.
 dc_good_female <- dc_wikia_data %>%
   filter(SEX == "Female Characters") %>% 
-  group_by(ALIGN) %>%
+  filter(ALIGN == "Good Characters") %>%
   summarise(count=n()) %>%
   mutate(percent_of_total = count/1967*100)
 
@@ -152,7 +152,7 @@ marvel_all_female <- marvel_wikia_data %>%
 #This code tells us that there are 1537 "Good Female Characters" in the marvel_wikia_data set, which is 40.1% of the total female characters.
 marvel_good_female <- marvel_wikia_data %>%
   filter(SEX == "Female Characters") %>% 
-  group_by(ALIGN) %>%
+  filter(ALIGN == "Good Characters") %>%
   summarise(count=n()) %>%
   mutate(percent_of_total = count/3837*100)
 
