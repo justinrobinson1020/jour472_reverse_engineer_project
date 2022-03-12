@@ -34,7 +34,7 @@ In this notebook, we are reverse engineering five sentences from the story.
 DC: Female: Good 54%, Neutral 12%, Bad 34%. Male: Good 42%, Neutral 8%, Bad 50%. 
 Marvel: Female: Good 48%, Neutral 21%, Bad 31%. Male: Good 30%, Neutral 15%, Bad 55%.
 
-* **Analysis summary**: I was able to verify that women were of neutral allegiance at a higher rate than men in both DC (10% neutral women to 8% neutral men) and Marvel (17% to 12%). I also was curious about the other percentages, so I calculated those as well. Below are my findings compared to the numbers from the reported story. The only issue is that I was not able to fully reproduce the exact data. I had 10 to 8 in DC (the story had 12 to 8), and I had 17 to 12 Marvel (the story had 21 to 15)
+* **Analysis summary**: I was able to verify that women were of neutral allegiance at a higher rate than men in both DC (10% neutral women to 8% neutral men) and Marvel (17% to 12%). I also was curious about the other percentages, so I calculated those as well. Below are my findings compared to the numbers from the reported story. The only issue is that I was not able to fully reproduce the exact data. I had 10 to 8 in DC (the story had 12 to 8), and I had 17 to 12 Marvel (the story had 21 to 15). One explanation for the difference in numbers is that of the 1967 female characters in DC, 220 had a value of "N/A" and one had a value of "Reformed." Of the 3837 females in Marvel, 684 were "N/A." If the authors of the original article ommitted these "N/A" characters, that would change the data they produced versus what I found.
 
 Reported Story:
 DC: Female: Good 54%, Neutral 12%, Bad 34%. Male: Good 42%, Neutral 8%, Bad 50%. 
@@ -152,7 +152,7 @@ marvel_all_female <- marvel_wikia_data %>%
 #This code tells us that there are 1537 "Good Female Characters" in the marvel_wikia_data set, which is 40.1% of the total female characters.
 marvel_good_female <- marvel_wikia_data %>%
   filter(SEX == "Female Characters") %>% 
-  filter(ALIGN == "Good Characters") %>%
+  group_by(ALIGN) %>%
   summarise(count=n()) %>%
   mutate(percent_of_total = count/3837*100)
 
