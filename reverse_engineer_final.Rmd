@@ -1,0 +1,408 @@
+---
+title: "reverse_engineering_project"
+author: "Justin Robinson, Hanna Zakharenko, Ian Decker"
+date: "3/30/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction 
+
+In this notebook, we are reverse engineering the story, Comic Books Are Still Made By Men, For Men And About Men (https://fivethirtyeight.com/features/women-in-comic-books/)
+
+## Load libraries
+
+Loading required libraries for this analysis.
+
+```{r echo=FALSE, message=FALSE}
+library(tidyverse)
+library (readr)
+```
+
+## Load and Cleaning Data
+
+In this section, describe the source of the data, write a basic data dictionary for data you are working with, and discuss any caveats or issues you discovered working with this data. 
+
+```{r}
+# Load required data
+
+urlfile="https://raw.githubusercontent.com/fivethirtyeight/data/master/comic-characters/dc-wikia-data.csv"
+
+dc_characters<-read_csv(url(urlfile))
+
+urlfile2 = "https://raw.githubusercontent.com/fivethirtyeight/data/master/comic-characters/marvel-wikia-data.csv"
+
+marvel_characters<- read_csv((urlfile2))
+
+# Path to data should be loaded from folder "data" i.e. read_csv("data/name_of_data.csv")
+
+# Clean required data and prepare for analysis if needed.
+
+
+```
+
+## Sentences to Engineer
+In this notebook, we are reverse engineering five sentences from the story.
+
+### Sentence 1
+
+* **Sentence text**: "Among the characters for which we have gender data, females made up only 29.3 percent of the DC character list and 24.7 percent of the Marvel roster."
+* **Analysis summary**: It was hard to determine exactly what result the reporters were saying, so I was unable to find the exact number. I performed analysis comparing females to all genders in the DC character population that there was data for by eliminating the N/A values, as well as comparing females just to data that reported male/female characters, but through both methods I did not get 29.3% (it is 29.14% for male/female and 29.05% for all gender). However, I did get the result from the Marvel roster by using the all sex method, which was 24.7%.
+
+```{r}
+#DC CHARACTERS MALE/FEMALE
+malefemale_dc_characters <- dc_characters %>%
+  filter(!is.na(SEX))%>%
+  filter(SEX =="Female Characters" | SEX == "Male Characters")
+
+malefemale_dc_characters %>%
+  group_by(SEX) %>%
+  summarise(count=n()) %>%
+  mutate(percent_of_total = count/6750*100)
+```
+```{r}
+#DC CHARACTERS ALL SEX
+allsex_dc_characters <- dc_characters %>%
+  filter(!is.na(SEX))
+
+allsex_dc_characters %>%
+  group_by(SEX) %>%
+  summarise(count=n()) %>%
+  mutate(percent_of_total = count/6771*100)
+```
+```{r}
+#MARVEL CHARACTERS ALL SEX
+allsex_marvel_characters <- marvel_characters %>%
+  filter(!is.na(SEX))
+
+allsex_marvel_characters %>%
+  group_by(SEX) %>%
+  summarise(count=n()) %>%
+  mutate(percent_of_total = count/15522*100)
+```
+### Sentence 2
+
+* **Sentence text**: “Women and men were almost exactly equally likely to have a secret identity in the Marvel universe (49.4 percent of males and 49.5 percent of females), while in the DC universe 51 percent of males had a secret identity and 45 percent of females did.”
+* **Analysis summary**: Initially I started out by attempting to isolate each individual group (female marvel characters, female marvel characters with secret identites, male marvel characters, etc.), but then changed my approach to find stats for all genders and identities at once. This reduced the amount of redundancy and complexity in the code and made the results easier to present in one place. Using this method I was able to accurately reproduce the results from this sentence found in the data frames marvel_characters_identity_by_gender and dc_characters_identity_by_gender.
+
+```{r}
+marvel_characters_idenity_by_gender <- marvel_characters %>%
+  filter(!is.na(ID)) %>% 
+  group_by(SEX) %>% 
+  mutate(gender_total = n()) %>% 
+  group_by(SEX, ID) %>% 
+  mutate(gender_id_total = n()) %>% 
+  mutate(gender_id_percent = gender_id_total / gender_total * 100) %>% 
+  group_by(gender_id_percent, SEX, ID) %>% 
+  summarise(
+    count = n(),
+  ) %>% 
+  arrange(SEX)
+
+dc_characters_idenity_by_gender <- dc_characters %>%
+  filter(!is.na(ID)) %>% 
+  group_by(SEX) %>% 
+  mutate(gender_total = n()) %>% 
+  group_by(SEX, ID) %>% 
+  mutate(gender_id_total = n()) %>% 
+  mutate(gender_id_percent = gender_id_total / gender_total * 100) %>% 
+  group_by(gender_id_percent, SEX, ID) %>% 
+  summarise(
+    count = n(),
+  ) %>% 
+  arrange(SEX)
+
+```
+
+### Sentence 3
+
+* **Sentence text**: In both DC and Marvel, women were of neutral allegiance at a higher rate than men.
+DC: Female: Good 54%, Neutral 12%, Bad 34%. Male: Good 42%, Neutral 8%, Bad 50%. 
+Marvel: Female: Good 48%, Neutral 21%, Bad 31%. Male: Good 30%, Neutral 15%, Bad 55%.
+
+* **Analysis summary**: I was able to verify that women were of neutral allegiance at a higher rate than men in both DC (10% neutral women to 8% neutral men) and Marvel (17% to 12%). I also was curious about the other percentages, so I calculated those as well. Below are my findings compared to the numbers from the reported story. The only issue is that I was not able to fully reproduce the exact data. I had 10 to 8 in DC (the story had 12 to 8), and I had 17 to 12 Marvel (the story had 21 to 15)
+
+Reported Story:
+DC: Female: Good 54%, Neutral 12%, Bad 34%. Male: Good 42%, Neutral 8%, Bad 50%. 
+Marvel: Female: Good 48%, Neutral 21%, Bad 31%. Male: Good 30%, Neutral 15%, Bad 55%.
+
+My code results:
+DC: Female: Good 48%, Neutral 10%, Bad 30%. Male: Good 39%, Neutral 8%, Bad 47%. 
+Marvel: Female: Good 40%, Neutral 17%, Bad 25%. Male: Good 26%, Neutral 12%, Bad 46%.
+
+```{r}
+# Put code to reverse engineer sentence here
+
+#This code tells us that there are 1967 female characters in the dc_wikia_data set.
+dc_all_female <- dc_characters %>%
+  filter(SEX == "Female Characters") %>%
+  summarise(count=n())
+
+```
+
+
+
+```{r}
+#This code tells us that there are 953 "Good Female Characters" in the dc_wikia_data set, which is 48.4% of the total female characters.
+dc_good_female <- dc_characters %>%
+  filter(SEX == "Female Characters") %>% 
+  group_by(ALIGN) %>%
+  summarise(count=n()) %>%
+  mutate(percent_of_total = count/1967*100)
+
+```
+
+
+
+```{r}
+#This code tells us that there are 196 "Neutral Female Characters" in the dc_wikia_data set, which is 9.96%, or 10% of the total female characters.
+dc_neutral_female <- dc_characters %>%
+  filter(SEX == "Female Characters") %>% 
+  filter(ALIGN == "Neutral Characters") %>%
+  summarise(count=n()) %>%
+  mutate(percent_of_total = count/1967*100)
+
+```
+
+
+
+```{r}
+#This code tells us that there are 597 "Bad Female Characters" in the dc_wikia_data set, which is 30.4% of the total female characters.
+dc_bad_female <- dc_characters %>%
+  filter(SEX == "Female Characters") %>% 
+  filter(ALIGN == "Bad Characters") %>%
+  summarise(count=n()) %>%
+  mutate(percent_of_total = count/1967*100)
+
+```
+
+
+
+```{r}
+#This code tells us that there are 4783 male characters in the dc_wikia_data set.
+dc_all_male <- dc_characters %>%
+  filter(SEX == "Male Characters") %>%
+  summarise(count=n())
+
+```
+
+
+
+```{r}
+#This code tells us that there are 	1843 "Good Male Characters" in the dc_wikia_data set, which is 39% of the total male characters.
+dc_good_male <- dc_characters %>%
+  filter(SEX == "Male Characters") %>% 
+  filter(ALIGN == "Good Characters") %>%
+  summarise(count=n()) %>%
+  mutate(percent_of_total = count/4783*100)
+
+```
+
+
+
+```{r}
+#This code tells us that there are 	359 "Neutral Male Characters" in the dc_wikia_data set, which is 7.5%, or 8% of the total male characters.
+dc_neutral_male <- dc_characters %>%
+  filter(SEX == "Male Characters") %>% 
+  filter(ALIGN == "Neutral Characters") %>%
+  summarise(count=n()) %>%
+  mutate(percent_of_total = count/4783*100)
+
+```
+
+
+
+```{r}
+#This code tells us that there are 	2223 "Bad Male Characters" in the dc_wikia_data set, which is 46.5% of the total male characters.
+dc_bad_male <- dc_characters %>%
+  filter(SEX == "Male Characters") %>% 
+  filter(ALIGN == "Bad Characters") %>%
+  summarise(count=n()) %>%
+  mutate(percent_of_total = count/4783*100)
+
+```
+
+
+
+```{r}
+#This code tells us that there are 3837 female characters in the marvel_wikia_data set.
+marvel_all_female <- marvel_characters %>%
+  filter(SEX == "Female Characters") %>%
+  summarise(count=n())
+
+```
+
+
+
+```{r}
+#This code tells us that there are 1537 "Good Female Characters" in the marvel_wikia_data set, which is 40.1% of the total female characters.
+marvel_good_female <- marvel_characters %>%
+  filter(SEX == "Female Characters") %>% 
+  filter(ALIGN == "Good Characters") %>%
+  summarise(count=n()) %>%
+  mutate(percent_of_total = count/3837*100)
+
+```
+
+
+
+```{r}
+#This code tells us that there are 640 "Neutral Female Characters" in the marvel_wikia_data set, which is 17% of the total female characters.
+marvel_neutral_female <- marvel_characters %>%
+  filter(SEX == "Female Characters") %>% 
+  filter(ALIGN == "Neutral Characters") %>%
+  summarise(count=n()) %>%
+  mutate(percent_of_total = count/3837*100)
+
+```
+
+
+
+```{r}
+#This code tells us that there are 976 "Bad Female Characters" in the marvel_wikia_data set, which is 25% of the total female characters.
+marvel_bad_female <- marvel_characters %>%
+  filter(SEX == "Female Characters") %>% 
+  filter(ALIGN == "Bad Characters") %>%
+  summarise(count=n()) %>%
+  mutate(percent_of_total = count/3837*100)
+
+```
+
+
+
+```{r}
+#This code tells us that there are 11638 male characters in the marvel_wikia_data set.
+marvel_all_male <- marvel_characters %>%
+  filter(SEX == "Male Characters") %>%
+  summarise(count=n())
+
+```
+
+
+
+```{r}
+#This code tells us that there are 2966 "Good Male Characters" in the marvel_wikia_data set, which is 25.5% of the total male characters.
+marvel_good_male <- marvel_characters %>%
+  filter(SEX == "Male Characters") %>% 
+  filter(ALIGN == "Good Characters") %>%
+  summarise(count=n()) %>%
+  mutate(percent_of_total = count/11638*100)
+
+```
+
+
+
+```{r}
+#This code tells us that there are 1440 "Neutral Male Characters" in the marvel_wikia_data set, which is 12.4% of the total male characters.
+marvel_neutral_male <- marvel_characters %>%
+  filter(SEX == "Male Characters") %>% 
+  filter(ALIGN == "Neutral Characters") %>%
+  summarise(count=n()) %>%
+  mutate(percent_of_total = count/11638*100)
+
+```
+
+
+
+```{r}
+#This code tells us that there are 5338 "Bad Male Characters" in the marvel_wikia_data set, which is 46% of the total male characters.
+marvel_bad_male <- marvel_characters %>%
+  filter(SEX == "Male Characters") %>% 
+  filter(ALIGN == "Bad Characters") %>%
+  summarise(count=n()) %>%
+  mutate(percent_of_total = count/11638*100)
+
+```
+
+### Sentence 4
+
+* **Sentence text**: “Publishing houses have also sought to introduce more gay, lesbian, bisexual and transgender characters into their stories. In some cases, both DC and Marvel have retroactively categorized a longstanding character as LGBT. But in recent years, a number of explicitly gender- and sexual-minority characters have been introduced. While it’s barely a blip in the whole data set, the chart below shows the recent introduction of LGBT characters over time.”
+* **Analysis summary**: I was largely able to confirm the results, but there are some inconsistencies between my findings and the author's. For instance in 1980 the author's chart shows no LGBTQ characters introduced, however the data lists the character Xi'an Coy Manh as being a homosexual character introduced that year. There are several of these small inconsistencies, but our charts are very close for the most part and show the same general trend of an increase in the introduction of LGBTQ characters.
+
+```{r}
+#Rename year column in Marvel data to match DC and bind
+all_characters <- dc_characters %>% 
+  bind_rows(marvel_characters %>%  rename(YEAR = Year))
+
+lgbtq_characters_with_year <- all_characters %>% 
+  filter(!is.na(YEAR) & !is.na(GSM)) %>% 
+  select(name, GSM, YEAR)
+
+lgbtq_characters_with_year %>% 
+  group_by(YEAR) %>% 
+  summarise(count=n()) %>% 
+  ggplot() +
+  geom_bar(aes(x=YEAR, weight=count))+
+  coord_cartesian(ylim = c(0, 15))
+
+```
+
+### Sentence 5
+
+* **Sentence text**: Looking at each year since 1961 — the year that modern Marvel comics start — we can see the number of characters introduced each year for each publisher. (This sentence is followed by a bar chart for DC and Marvel comics showing the number of characters produced each year)
+* **Analysis summary**: I was able to confirm the finding made by FiveThirtyEight showing the new character introductions by year for both Marvel and DC characters by recreating the graphs and comparing them to the original visualizations. I did this by selecting the character names and year they were introduced, counting the number of characters introduced in each year, and then graphing this data as a bar chart with year on the x-axis and the number of new characters introduced on the y-axis.
+
+The following code organizes the data and recreates the chart for DC characters:
+```{r}
+# Create dataframe with the characters and the year they were introduced 
+dc_characters_introduction <- dc_characters %>%
+  select(name, YEAR) %>%
+  filter(!is.na(YEAR))
+```
+
+
+```{r}
+# Add a column that counts the number of characters introduced in each year
+dc_characters_introduction_by_year <- dc_characters_introduction %>%
+  group_by(YEAR) %>%
+  summarise(total_characters = n())
+```
+
+```{r}
+dc_characters_introduction_by_year %>%
+  ggplot() +
+  geom_bar(aes(x=YEAR, weight=total_characters), fill="#48aadc") +
+labs(
+    title="DC, New Earth continuity",
+    x = "year",
+    y = "# of characters introduced",
+    caption = "source: DC, Marvel Wikias"
+    
+  )
+# Display results of code below this codeblock
+
+```
+The following code organizes the data and recreates the chart for Marvel characters:
+```{r}
+# Create dataframe with the characters and the year they were introduced 
+marvel_characters_introduction <- marvel_characters %>%
+  select(name, Year) %>%
+  filter(!is.na(Year))
+```
+
+
+```{r}
+# Add a column that counts the number of characters introduced in each year
+marvel_characters_introduction_by_year <- marvel_characters_introduction %>%
+  group_by(Year) %>%
+  summarise(total_characters = n())
+```
+
+```{r}
+marvel_characters_introduction_by_year %>%
+  ggplot() +
+  geom_bar(aes(x=Year, weight=total_characters), fill="#ff2902") +
+labs(
+    title="Marvel, Earth-616 continuity",
+    x = "year",
+    y = "# of characters introduced",
+    caption = "source: DC, Marvel Wikias"
+    
+  )
+# Display results of code below this codeblock
+
+```
+-30-
