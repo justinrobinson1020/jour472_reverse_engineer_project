@@ -128,14 +128,69 @@ allsex_marvel_characters %>%
 
 ### Sentence 5
 
-* **Sentence text**: [Paste in sentence to engineer here]
-* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+* **Sentence text**: Looking at each year since 1961 — the year that modern Marvel comics start — we can see the number of characters introduced each year for each publisher. (This sentence is followed by a bar chart for DC and Marvel comics showing the number of characters produced each year)
+* **Analysis summary**: I was able to confirm the finding made by FiveThirtyEight showing the new character introductions by year for both Marvel and DC characters by recreating the graphs and comparing them to the original visualizations. I did this by selecting the character names and year they were introduced, counting the number of characters introduced in each year, and then graphing this data as a bar chart with year on the x-axis and the number of new characters introduced on the y-axis.
+
+The following code organizes the data and recreates the chart for DC characters:
+```{r}
+# Create dataframe with the characters and the year they were introduced 
+dc_characters_introduction <- dc_characters %>%
+  select(name, YEAR) %>%
+  filter(!is.na(YEAR))
+```
+
 
 ```{r}
-# Put code to reverse engineer sentence here
+# Add a column that counts the number of characters introduced in each year
+dc_characters_introduction_by_year <- dc_characters_introduction %>%
+  group_by(YEAR) %>%
+  summarise(total_characters = n())
+```
 
+```{r}
+dc_characters_introduction_by_year %>%
+  ggplot() +
+  geom_bar(aes(x=YEAR, weight=total_characters), fill="#48aadc") +
+labs(
+    title="DC, New Earth continuity",
+    x = "year",
+    y = "# of characters introduced",
+    caption = "source: DC, Marvel Wikias"
+    
+  )
 # Display results of code below this codeblock
 
 ```
+The following code organizes the data and recreates the chart for Marvel characters:
+```{r}
+# Create dataframe with the characters and the year they were introduced 
+marvel_characters_introduction <- marvel_characters %>%
+  select(name, Year) %>%
+  filter(!is.na(Year))
+```
+
+
+```{r}
+# Add a column that counts the number of characters introduced in each year
+marvel_characters_introduction_by_year <- marvel_characters_introduction %>%
+  group_by(Year) %>%
+  summarise(total_characters = n())
+```
+
+```{r}
+marvel_characters_introduction_by_year %>%
+  ggplot() +
+  geom_bar(aes(x=Year, weight=total_characters), fill="#ff2902") +
+labs(
+    title="Marvel, Earth-616 continuity",
+    x = "year",
+    y = "# of characters introduced",
+    caption = "source: DC, Marvel Wikias"
+    
+  )
+# Display results of code below this codeblock
+
+```
+
 
 -30-
