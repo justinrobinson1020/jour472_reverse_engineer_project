@@ -116,13 +116,24 @@ allsex_marvel_characters %>%
 
 ### Sentence 4
 
-* **Sentence text**: [Paste in sentence to engineer here]
-* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+* **Sentence text**: “Publishing houses have also sought to introduce more gay, lesbian, bisexual and transgender characters into their stories. In some cases, both DC and Marvel have retroactively categorized a longstanding character as LGBT. But in recent years, a number of explicitly gender- and sexual-minority characters have been introduced. While it’s barely a blip in the whole data set, the chart below shows the recent introduction of LGBT characters over time.”
+* **Analysis summary**: I was largely able to confirm the results, but there are some inconsistencies between my findings and the author's. For instance in 1980 the author's chart shows no LGBTQ characters introduced, however the data lists the character Xi'an Coy Manh as being a homosexual character introduced that year. There are several of these small inconsistencies, but our charts are very close for the most part and show the same general trend of an increase in the introduction of LGBTQ characters.
 
 ```{r}
-# Put code to reverse engineer sentence here
+#Rename year column in Marvel data to match DC and bind
+all_characters <- dc_characters %>% 
+  bind_rows(marvel_characters %>%  rename(YEAR = Year))
 
-# Display results of code below this codeblock
+lgbtq_characters_with_year <- all_characters %>% 
+  filter(!is.na(YEAR) & !is.na(GSM)) %>% 
+  select(name, GSM, YEAR)
+
+lgbtq_characters_with_year %>% 
+  group_by(YEAR) %>% 
+  summarise(count=n()) %>% 
+  ggplot() +
+  geom_bar(aes(x=YEAR, weight=count))+
+  coord_cartesian(ylim = c(0, 15))
 
 ```
 
