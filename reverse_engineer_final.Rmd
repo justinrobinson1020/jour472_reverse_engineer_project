@@ -136,7 +136,7 @@ Marvel: Female: Good 40%, Neutral 17%, Bad 25%. Male: Good 26%, Neutral 12%, Bad
 ```{r}
 # Put code to reverse engineer sentence here
 
-#This code tells us that there are 1967 female characters in the dc_wikia_data set.
+#This code tells us that there are 1967 female characters in the dc_characters set.
 dc_all_female <- dc_characters %>%
   filter(SEX == "Female Characters") %>%
   summarise(count=n())
@@ -146,7 +146,7 @@ dc_all_female <- dc_characters %>%
 
 
 ```{r}
-#This code tells us that there are 953 "Good Female Characters" in the dc_wikia_data set, which is 48.4% of the total female characters.
+#This code tells us that there are 953 "Good Female Characters" in the dc_characters, which is 48.4% of the total female characters.
 dc_good_female <- dc_characters %>%
   filter(SEX == "Female Characters") %>% 
   group_by(ALIGN) %>%
@@ -158,7 +158,7 @@ dc_good_female <- dc_characters %>%
 
 
 ```{r}
-#This code tells us that there are 196 "Neutral Female Characters" in the dc_wikia_data set, which is 9.96%, or 10% of the total female characters.
+#This code tells us that there are 196 "Neutral Female Characters" in the dc_characters, which is 9.96%, or 10% of the total female characters.
 dc_neutral_female <- dc_characters %>%
   filter(SEX == "Female Characters") %>% 
   filter(ALIGN == "Neutral Characters") %>%
@@ -170,7 +170,7 @@ dc_neutral_female <- dc_characters %>%
 
 
 ```{r}
-#This code tells us that there are 597 "Bad Female Characters" in the dc_wikia_data set, which is 30.4% of the total female characters.
+#This code tells us that there are 597 "Bad Female Characters" in the dc_characters set, which is 30.4% of the total female characters.
 dc_bad_female <- dc_characters %>%
   filter(SEX == "Female Characters") %>% 
   filter(ALIGN == "Bad Characters") %>%
@@ -182,7 +182,7 @@ dc_bad_female <- dc_characters %>%
 
 
 ```{r}
-#This code tells us that there are 4783 male characters in the dc_wikia_data set.
+#This code tells us that there are 4783 male characters in the dc_characters set.
 dc_all_male <- dc_characters %>%
   filter(SEX == "Male Characters") %>%
   summarise(count=n())
@@ -192,7 +192,7 @@ dc_all_male <- dc_characters %>%
 
 
 ```{r}
-#This code tells us that there are 	1843 "Good Male Characters" in the dc_wikia_data set, which is 39% of the total male characters.
+#This code tells us that there are 	1843 "Good Male Characters" in the dc_characters set, which is 39% of the total male characters.
 dc_good_male <- dc_characters %>%
   filter(SEX == "Male Characters") %>% 
   filter(ALIGN == "Good Characters") %>%
@@ -204,7 +204,7 @@ dc_good_male <- dc_characters %>%
 
 
 ```{r}
-#This code tells us that there are 	359 "Neutral Male Characters" in the dc_wikia_data set, which is 7.5%, or 8% of the total male characters.
+#This code tells us that there are 	359 "Neutral Male Characters" in the dc_characters set, which is 7.5%, or 8% of the total male characters.
 dc_neutral_male <- dc_characters %>%
   filter(SEX == "Male Characters") %>% 
   filter(ALIGN == "Neutral Characters") %>%
@@ -216,7 +216,7 @@ dc_neutral_male <- dc_characters %>%
 
 
 ```{r}
-#This code tells us that there are 	2223 "Bad Male Characters" in the dc_wikia_data set, which is 46.5% of the total male characters.
+#This code tells us that there are 	2223 "Bad Male Characters" in the dc_characters set, which is 46.5% of the total male characters.
 dc_bad_male <- dc_characters %>%
   filter(SEX == "Male Characters") %>% 
   filter(ALIGN == "Bad Characters") %>%
@@ -228,7 +228,7 @@ dc_bad_male <- dc_characters %>%
 
 
 ```{r}
-#This code tells us that there are 3837 female characters in the marvel_wikia_data set.
+#This code tells us that there are 3837 female characters in the marvel_characters set.
 marvel_all_female <- marvel_characters %>%
   filter(SEX == "Female Characters") %>%
   summarise(count=n())
@@ -238,7 +238,7 @@ marvel_all_female <- marvel_characters %>%
 
 
 ```{r}
-#This code tells us that there are 1537 "Good Female Characters" in the marvel_wikia_data set, which is 40.1% of the total female characters.
+#This code tells us that there are 1537 "Good Female Characters" in the marvel_characters set, which is 40.1% of the total female characters.
 marvel_good_female <- marvel_characters %>%
   filter(SEX == "Female Characters") %>% 
   filter(ALIGN == "Good Characters") %>%
@@ -250,7 +250,7 @@ marvel_good_female <- marvel_characters %>%
 
 
 ```{r}
-#This code tells us that there are 640 "Neutral Female Characters" in the marvel_wikia_data set, which is 17% of the total female characters.
+#This code tells us that there are 640 "Neutral Female Characters" in the marvel_characters set, which is 17% of the total female characters.
 marvel_neutral_female <- marvel_characters %>%
   filter(SEX == "Female Characters") %>% 
   filter(ALIGN == "Neutral Characters") %>%
@@ -262,7 +262,7 @@ marvel_neutral_female <- marvel_characters %>%
 
 
 ```{r}
-#This code tells us that there are 976 "Bad Female Characters" in the marvel_wikia_data set, which is 25% of the total female characters.
+#This code tells us that there are 976 "Bad Female Characters" in the marvel_characters set, which is 25% of the total female characters.
 marvel_bad_female <- marvel_characters %>%
   filter(SEX == "Female Characters") %>% 
   filter(ALIGN == "Bad Characters") %>%
@@ -274,7 +274,7 @@ marvel_bad_female <- marvel_characters %>%
 
 
 ```{r}
-#This code tells us that there are 11638 male characters in the marvel_wikia_data set.
+#This code tells us that there are 11638 male characters in the marvel_characters set.
 marvel_all_male <- marvel_characters %>%
   filter(SEX == "Male Characters") %>%
   summarise(count=n())
@@ -284,7 +284,7 @@ marvel_all_male <- marvel_characters %>%
 
 
 ```{r}
-#This code tells us that there are 2966 "Good Male Characters" in the marvel_wikia_data set, which is 25.5% of the total male characters.
+#This code tells us that there are 2966 "Good Male Characters" in the marvel_characters set, which is 25.5% of the total male characters.
 marvel_good_male <- marvel_characters %>%
   filter(SEX == "Male Characters") %>% 
   filter(ALIGN == "Good Characters") %>%
@@ -296,7 +296,7 @@ marvel_good_male <- marvel_characters %>%
 
 
 ```{r}
-#This code tells us that there are 1440 "Neutral Male Characters" in the marvel_wikia_data set, which is 12.4% of the total male characters.
+#This code tells us that there are 1440 "Neutral Male Characters" in the marvel_characters set, which is 12.4% of the total male characters.
 marvel_neutral_male <- marvel_characters %>%
   filter(SEX == "Male Characters") %>% 
   filter(ALIGN == "Neutral Characters") %>%
@@ -308,7 +308,7 @@ marvel_neutral_male <- marvel_characters %>%
 
 
 ```{r}
-#This code tells us that there are 5338 "Bad Male Characters" in the marvel_wikia_data set, which is 46% of the total male characters.
+#This code tells us that there are 5338 "Bad Male Characters" in the marvel_characters set, which is 46% of the total male characters.
 marvel_bad_male <- marvel_characters %>%
   filter(SEX == "Male Characters") %>% 
   filter(ALIGN == "Bad Characters") %>%
